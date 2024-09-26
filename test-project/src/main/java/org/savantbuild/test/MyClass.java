@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2024, Inversoft Inc., All Rights Reserved
+ * Copyright (c) 2014, Inversoft Inc., All Rights Reserved
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,18 @@
  * either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.savantbuild.plugin.linter
+package org.savantbuild.test;
 
-import java.nio.file.Path
-import java.nio.file.Paths
+// un-used import
+import org.slf4j.Logger;
+// un-used import
+import org.slf4j.LoggerFactory;
 
 /**
- * A settings object that defines options for how to execute PMD.
+ * Java class.
  *
  * @author Daniel DeGroff
  */
-class LinterSettings {
-  Path reportDirectory = Paths.get("build/linter-reports")
+public class MyClass {
+  private String unUsed = "A sad un-used string.";
 }

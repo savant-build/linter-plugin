@@ -15,8 +15,24 @@
  */
 package org.savantbuild.plugin.linter
 
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.Paths
 
+import org.savantbuild.dep.domain.License
+import org.savantbuild.domain.Project
+import org.savantbuild.domain.Version
+import org.savantbuild.io.FileTools
+import org.savantbuild.output.Output
+import org.savantbuild.output.SystemOutOutput
+import org.savantbuild.runtime.BuildFailureException
+import org.savantbuild.runtime.RuntimeConfiguration
+import org.testng.annotations.BeforeSuite
 import org.testng.annotations.Test
+
+import static org.testng.AssertJUnit.assertEquals
+import static org.testng.AssertJUnit.assertFalse
+import static org.testng.AssertJUnit.assertTrue
 
 /**
  * Tests the Linter plugin.
@@ -24,8 +40,81 @@ import org.testng.annotations.Test
  * @author Daniel DeGroff
  */
 class LinterPluginTest {
+  public static Path projectDir
+
+  @BeforeSuite
+  void beforeSuite() {
+    projectDir = Paths.get("")
+    if (!Files.isRegularFile(projectDir.resolve("LICENSE"))) {
+      projectDir = Paths.get("../linter-plugin")
+    }
+  }
+
   @Test
   void pmd() throws Exception {
-    assertTrue(true)
+    Output output = new SystemOutOutput(true)
+    output.enableDebug()
+
+
+    Project project = new Project(projectDir.resolve("test-project"), output)
+    project.group = "org.savantbuild.test"
+    project.name = "test-project"
+    project.version = new Version("1.0.0")
+    project.licenses.add(License.parse("ApacheV2_0", null))
+
+    LinterPlugin plugin = new LinterPlugin(project, new RuntimeConfiguration(), output)
+    plugin.settings.reportDirectory = Paths.get("test-project/build/linter-reports")
+
+    // Clear the output directory
+    FileTools.prune(plugin.settings.reportDirectory)
+
+    // Execute PMD
+    plugin.pmd(
+        minimumPriority: "MEDIUM",
+        ruleSets: ["src/test/resources/pmd/ruleset.xml"]
+    )
+
+    // Assert the report has something in it?
+    assertTrue(Files.exists(plugin.settings.reportDirectory.resolve("pmd-report.html")))
+    assertTrue(Files.exists(plugin.settings.reportDirectory.resolve("pmd-report.txt")))
+    assertTrue(Files.exists(plugin.settings.reportDirectory.resolve("pmd-report.xml")))
+
+    String textReport = new String(Files.readAllBytes(plugin.settings.reportDirectory.resolve("pmd-report.txt")))
+    assertEquals("test-project/src/main/java/org/savantbuild/test/MyClass.java:29:\tUnusedPrivateField:\tAvoid unused private fields such as 'unUsed'.\n",
+        textReport)
+  }
+
+  @Test
+  void pmd_missing_rulesets() throws Exception {
+    Output output = new SystemOutOutput(true)
+    output.enableDebug()
+
+    Project project = new Project(projectDir.resolve("test-project"), output)
+    project.group = "org.savantbuild.test"
+    project.name = "test-project"
+    project.version = new Version("1.0.0")
+    project.licenses.add(License.parse("ApacheV2_0", null))
+
+    LinterPlugin plugin = new LinterPlugin(project, new RuntimeConfiguration(), output)
+    plugin.settings.reportDirectory = Paths.get("test-project/build/linter-reports")
+
+    // Clear the output directory
+    FileTools.prune(plugin.settings.reportDirectory)
+
+    // Execute PMD
+    try {
+      plugin.pmd()
+
+    } catch (BuildFailureException e) {
+      assertEquals("""You must specify one or more values for the [ruleSets] argument. It will look something like this: 
+
+pmd(ruleSets: ["src/test/resources/pmd/ruleset.xml"])""",
+          e.getMessage())
+    }
+
+    // We failed, so these should not be created
+    assertFalse(Files.exists(plugin.settings.reportDirectory.resolve("pmd-report.html")))
+    assertFalse(Files.exists(plugin.settings.reportDirectory.resolve("pmd-report.txt")))
+    assertFalse(Files.exists(plugin.settings.reportDirectory.resolve("pmd-report.xml")))
   }
 }

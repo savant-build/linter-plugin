@@ -50,6 +50,7 @@ project(group: "org.savantbuild.plugin", name: "linter", version: "2.0.0", licen
 
     group(name: "test-compile", export: false) {
       dependency(id: "org.testng:testng:6.8.7")
+      dependency(id: "org.savantbuild:savant-io:2.0.0-RC.7")
     }
 
     group(name: "compile") {
