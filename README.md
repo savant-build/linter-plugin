@@ -1,2 +1,2 @@
-# pmd-plugin
-PMD plugin
+# linter-plugin
+Linter plugin
