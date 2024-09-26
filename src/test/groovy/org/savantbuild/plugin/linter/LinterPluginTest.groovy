@@ -27,6 +27,7 @@ import org.savantbuild.output.Output
 import org.savantbuild.output.SystemOutOutput
 import org.savantbuild.runtime.BuildFailureException
 import org.savantbuild.runtime.RuntimeConfiguration
+import org.testng.annotations.BeforeMethod
 import org.testng.annotations.BeforeSuite
 import org.testng.annotations.Test
 
@@ -42,6 +43,10 @@ import static org.testng.AssertJUnit.assertTrue
 class LinterPluginTest {
   public static Path projectDir
 
+  Output output
+
+  Project project
+
   @BeforeSuite
   void beforeSuite() {
     projectDir = Paths.get("")
@@ -50,18 +55,21 @@ class LinterPluginTest {
     }
   }
 
-  @Test
-  void pmd() throws Exception {
-    Output output = new SystemOutOutput(true)
+  @BeforeMethod
+  void beforeMethod() {
+    output = new SystemOutOutput(true)
     output.enableDebug()
 
-
-    Project project = new Project(projectDir.resolve("test-project"), output)
+    project = new Project(projectDir.resolve("test-project"), output)
     project.group = "org.savantbuild.test"
     project.name = "test-project"
     project.version = new Version("1.0.0")
     project.licenses.add(License.parse("ApacheV2_0", null))
+  }
 
+
+  @Test
+  void pmd() throws Exception {
     LinterPlugin plugin = new LinterPlugin(project, new RuntimeConfiguration(), output)
     plugin.settings.reportDirectory = Paths.get("test-project/build/linter-reports")
 
@@ -86,15 +94,6 @@ class LinterPluginTest {
 
   @Test
   void pmd_missing_rulesets() throws Exception {
-    Output output = new SystemOutOutput(true)
-    output.enableDebug()
-
-    Project project = new Project(projectDir.resolve("test-project"), output)
-    project.group = "org.savantbuild.test"
-    project.name = "test-project"
-    project.version = new Version("1.0.0")
-    project.licenses.add(License.parse("ApacheV2_0", null))
-
     LinterPlugin plugin = new LinterPlugin(project, new RuntimeConfiguration(), output)
     plugin.settings.reportDirectory = Paths.get("test-project/build/linter-reports")
 
@@ -104,7 +103,6 @@ class LinterPluginTest {
     // Execute PMD
     try {
       plugin.pmd()
-
     } catch (BuildFailureException e) {
       assertEquals("""You must specify one or more values for the [ruleSets] argument. It will look something like this: 
 

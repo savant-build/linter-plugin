@@ -17,7 +17,6 @@ package org.savantbuild.plugin.linter
 
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
-import java.nio.file.StandardOpenOption
 
 import org.savantbuild.domain.Project
 import org.savantbuild.output.Output
