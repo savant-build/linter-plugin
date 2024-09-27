@@ -51,6 +51,7 @@ class LinterPlugin extends BaseGroovyPlugin {
   void pmd(Map attributes = [:]) {
     String reportFormat = attributes.getOrDefault("reportFormat", "xml")
     String reportFileName = attributes.getOrDefault("reportFileName", "pmd-report")
+    boolean reportSuppressedViolations = attributes.getOrDefault("reportSuppressedViolations", false)
     String languageVersion = attributes.getOrDefault("languageVersion", "17")
     String inputPath = attributes.getOrDefault("inputPath", "src/main/java")
     String minimumPriority = attributes.getOrDefault("minimumPriority", "MEDIUM")
@@ -72,6 +73,7 @@ class LinterPlugin extends BaseGroovyPlugin {
 
     config.setDefaultLanguageVersion(LanguageRegistry.PMD.getLanguageById("java").getVersion(languageVersion))
     config.setMinimumPriority(RulePriority.valueOf(minimumPriority))
+    config.setShowSuppressedViolations(reportSuppressedViolations)
     config.setReportFormat(reportFormat)
     config.setReportFile(settings.reportDirectory.resolve((String) (reportFileName + "." + reportFormat)))
 
@@ -82,9 +84,11 @@ class LinterPlugin extends BaseGroovyPlugin {
 
     def html = new HTMLRenderer()
     html.setWriter(writers.html)
+    html.setShowSuppressedViolations(reportSuppressedViolations)
 
     def text = new TextRenderer()
     text.setWriter(writers.text)
+    text.setShowSuppressedViolations(reportSuppressedViolations)
 
     def projectPath = project.directory.toAbsolutePath().toString() + "/"
     try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
@@ -114,7 +118,7 @@ class LinterPlugin extends BaseGroovyPlugin {
       output.infoln("[%d] Suppressed violations", report.suppressedViolations.size())
       output.infoln("[%d] Violations", report.violations.size())
 
-      if (report.configurationErrors.size() > 0 || report.processingErrors.size() > 0 || report.suppressedViolations.size() > 0 || report.violations.size() > 0) {
+      if (report.configurationErrors.size() > 0 || report.processingErrors.size() > 0 || (reportSuppressedViolations && report.suppressedViolations.size() > 0) || report.violations.size() > 0) {
         output.infoln("\nPMD analysis report")
         output.infoln("===============================================")
         output.infoln writers.text.toString()
