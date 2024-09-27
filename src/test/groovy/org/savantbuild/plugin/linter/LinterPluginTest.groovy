@@ -47,8 +47,10 @@ class LinterPluginTest {
 
   Project project
 
+  LinterPlugin plugin
+
   @BeforeSuite
-  void beforeSuite() {
+  static void beforeSuite() {
     projectDir = Paths.get("")
     if (!Files.isRegularFile(projectDir.resolve("LICENSE"))) {
       projectDir = Paths.get("../linter-plugin")
@@ -65,12 +67,12 @@ class LinterPluginTest {
     project.name = "test-project"
     project.version = new Version("1.0.0")
     project.licenses.add(License.parse("ApacheV2_0", null))
-  }
 
+    plugin = new LinterPlugin(project, new RuntimeConfiguration(), output)
+  }
 
   @Test
   void pmd() throws Exception {
-    LinterPlugin plugin = new LinterPlugin(project, new RuntimeConfiguration(), output)
     plugin.settings.reportDirectory = Paths.get("test-project/build/linter-reports")
 
     // Clear the output directory
@@ -94,7 +96,6 @@ class LinterPluginTest {
 
   @Test
   void pmd_missing_rulesets() throws Exception {
-    LinterPlugin plugin = new LinterPlugin(project, new RuntimeConfiguration(), output)
     plugin.settings.reportDirectory = Paths.get("test-project/build/linter-reports")
 
     // Clear the output directory
@@ -104,7 +105,7 @@ class LinterPluginTest {
     try {
       plugin.pmd()
     } catch (BuildFailureException e) {
-      assertEquals("""You must specify one or more values for the [ruleSets] argument. It will look something like this: 
+      assertEquals("""You must specify one or more values for the [ruleSets] argument. It will look something like this:
 
 pmd(ruleSets: ["src/test/resources/pmd/ruleset.xml"])""",
           e.getMessage())

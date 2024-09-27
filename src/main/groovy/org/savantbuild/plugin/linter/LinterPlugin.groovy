@@ -43,16 +43,15 @@ class LinterPlugin extends BaseGroovyPlugin {
   }
 
   void pmd(Map attributes = [:]) {
-    String reportFormat = attributes.get("reportFormat", "xml")
-    String reportFileName = attributes.get("reportFileName", "pmd-report")
-    String languageVersion = attributes.get("languageVersion", "17")
-    String inputPath = attributes.get("inputPath", "src/main/java")
-    String minimumPriority = attributes.get("minimumPriority", "MEDIUM")
-    String[] ruleSets = attributes.get("ruleSets", [])
+    String reportFormat = attributes.getOrDefault("reportFormat", "xml")
+    String reportFileName = attributes.getOrDefault('reportFileName', "pmd-report")
+    String languageVersion = attributes.getOrDefault("languageVersion", "17")
+    String inputPath = attributes.getOrDefault("inputPath", "src/main/java")
+    String minimumPriority = attributes.getOrDefault("minimumPriority", "MEDIUM")
+    String[] ruleSets = attributes.getOrDefault("ruleSets", [])
 
-    if (ruleSets.size() == 0) {
-      fail("You must specify one or more values for the [ruleSets] argument. It will look something like this: \n\n" +
-          "pmd(ruleSets: [\"src/test/resources/pmd/ruleset.xml\"])")
+    if (ruleSets.length == 0) {
+      fail("You must specify one or more values for the [ruleSets] argument. It will look something like this:\n\npmd(ruleSets: [\"src/test/resources/pmd/ruleset.xml\"])")
     }
 
     PMDConfiguration config = new PMDConfiguration()
@@ -61,7 +60,7 @@ class LinterPlugin extends BaseGroovyPlugin {
     config.setDefaultLanguageVersion(LanguageRegistry.PMD.getLanguageById("java").getVersion(languageVersion))
     config.setMinimumPriority(RulePriority.valueOf(minimumPriority))
     config.setReportFormat(reportFormat)
-    config.setReportFile(settings.reportDirectory.resolve(reportFileName + "." + reportFormat))
+    config.setReportFile(settings.reportDirectory.resolve((String) (reportFileName + "." + reportFormat)))
 
     // Ensure the report directory exists
     Files.createDirectory(settings.reportDirectory)
@@ -84,8 +83,8 @@ class LinterPlugin extends BaseGroovyPlugin {
       pmd.addRenderer(textRenderer)
 
       output.infoln("\nPMD analysis configuration ")
-      output.infoln("Language: java")
-      output.infoln("Language version: %s", languageVersion)
+      output.infoln("===============================================")
+      output.infoln("Language: Java %s", languageVersion)
       output.infoln("Minimum priority: %s", minimumPriority)
       output.infoln("Rulesets: %s", String.join(", ", ruleSets))
 
@@ -95,6 +94,7 @@ class LinterPlugin extends BaseGroovyPlugin {
       Files.write(settings.reportDirectory.resolve(reportFileName + ".txt"), textWriter.toString().getBytes(StandardCharsets.UTF_8))
 
       output.infoln("\nPMD analysis summary ")
+      output.infoln("===============================================")
       output.infoln("[%d] Configuration errors", report.configurationErrors.size())
       output.infoln("[%d] ProcessingErrors errors", report.processingErrors.size())
       output.infoln("[%d] Suppressed violations", report.suppressedViolations.size())
@@ -102,6 +102,7 @@ class LinterPlugin extends BaseGroovyPlugin {
 
       if (report.configurationErrors.size() > 0 || report.processingErrors.size() > 0 || report.suppressedViolations.size() > 0 || report.violations.size() > 0) {
         output.infoln("\nPMD analysis report")
+        output.infoln("===============================================")
         output.infoln textWriter.toString()
       }
     }
