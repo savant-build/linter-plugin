@@ -16,7 +16,7 @@
 
 pmdVersion = "7.5.0"
 
-project(group: "org.savantbuild.plugin", name: "linter", version: "2.0.0", licenses: ["Apache-2.0"]) {
+project(group: "org.savantbuild.plugin", name: "linter", version: "2.0.0-RC.1", licenses: ["Apache-2.0"]) {
   workflow {
     fetch {
       // Dependency resolution order:
