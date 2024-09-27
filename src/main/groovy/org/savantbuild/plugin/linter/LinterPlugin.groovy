@@ -42,9 +42,14 @@ class LinterPlugin extends BaseGroovyPlugin {
     super(project, runtimeConfiguration, output)
   }
 
+  private void writeReport(String fileName, String extension, StringWriter writer) {
+    String fileNameWithSuffix = fileName + extension;
+    Files.write(settings.reportDirectory.resolve(fileNameWithSuffix), writer.toString().getBytes(StandardCharsets.UTF_8))
+  }
+
   void pmd(Map attributes = [:]) {
     String reportFormat = attributes.getOrDefault("reportFormat", "xml")
-    String reportFileName = attributes.getOrDefault('reportFileName', "pmd-report")
+    String reportFileName = attributes.getOrDefault("reportFileName", "pmd-report")
     String languageVersion = attributes.getOrDefault("languageVersion", "17")
     String inputPath = attributes.getOrDefault("inputPath", "src/main/java")
     String minimumPriority = attributes.getOrDefault("minimumPriority", "MEDIUM")
@@ -65,22 +70,26 @@ class LinterPlugin extends BaseGroovyPlugin {
     // Ensure the report directory exists
     Files.createDirectory(settings.reportDirectory)
 
-    TextRenderer textRenderer = new TextRenderer()
-    Writer textWriter = new StringWriter()
-    textRenderer.setWriter(textWriter)
+    def writers = [
+        "html": new StringWriter(),
+        "text": new StringWriter()
+    ]
 
-    Writer htmlWriter = new StringWriter()
-    HTMLRenderer htmlRenderer = new HTMLRenderer()
-    htmlRenderer.setWriter(htmlWriter)
+    def html = new HTMLRenderer()
+    html.setWriter(writers.html)
+
+    def text = new TextRenderer()
+    text.setWriter(writers.text)
 
     def projectPath = project.directory.toAbsolutePath().toString() + "/"
     try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
       for (ruleSet in ruleSets) {
-        pmd.addRuleSet(pmd.newRuleSetLoader().loadFromResource(projectPath + ruleSet))
+        String ruleSetFileName = projectPath + ruleSet;
+        pmd.addRuleSet(pmd.newRuleSetLoader().loadFromResource(ruleSetFileName))
       }
 
-      pmd.addRenderer(htmlRenderer)
-      pmd.addRenderer(textRenderer)
+      pmd.addRenderer(html)
+      pmd.addRenderer(text)
 
       output.infoln("\nPMD analysis configuration ")
       output.infoln("===============================================")
@@ -90,8 +99,8 @@ class LinterPlugin extends BaseGroovyPlugin {
 
       var report = pmd.performAnalysisAndCollectReport()
 
-      Files.write(settings.reportDirectory.resolve(reportFileName + ".html"), htmlWriter.toString().getBytes(StandardCharsets.UTF_8))
-      Files.write(settings.reportDirectory.resolve(reportFileName + ".txt"), textWriter.toString().getBytes(StandardCharsets.UTF_8))
+      writeReport(reportFileName, ".html", writers.html)
+      writeReport(reportFileName, ".txt", writers.text)
 
       output.infoln("\nPMD analysis summary ")
       output.infoln("===============================================")
@@ -103,7 +112,7 @@ class LinterPlugin extends BaseGroovyPlugin {
       if (report.configurationErrors.size() > 0 || report.processingErrors.size() > 0 || report.suppressedViolations.size() > 0 || report.violations.size() > 0) {
         output.infoln("\nPMD analysis report")
         output.infoln("===============================================")
-        output.infoln textWriter.toString()
+        output.infoln writers.text.toString()
       }
     }
   }

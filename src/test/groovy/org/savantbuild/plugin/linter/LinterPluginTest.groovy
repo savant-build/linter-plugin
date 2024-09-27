@@ -69,15 +69,14 @@ class LinterPluginTest {
     project.licenses.add(License.parse("ApacheV2_0", null))
 
     plugin = new LinterPlugin(project, new RuntimeConfiguration(), output)
-  }
-
-  @Test
-  void pmd() throws Exception {
     plugin.settings.reportDirectory = Paths.get("test-project/build/linter-reports")
 
     // Clear the output directory
     FileTools.prune(plugin.settings.reportDirectory)
+  }
 
+  @Test
+  void pmd() throws Exception {
     // Execute PMD
     plugin.pmd(
         minimumPriority: "MEDIUM",
@@ -96,11 +95,6 @@ class LinterPluginTest {
 
   @Test
   void pmd_missing_rulesets() throws Exception {
-    plugin.settings.reportDirectory = Paths.get("test-project/build/linter-reports")
-
-    // Clear the output directory
-    FileTools.prune(plugin.settings.reportDirectory)
-
     // Execute PMD
     try {
       plugin.pmd()
