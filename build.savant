@@ -16,7 +16,7 @@
 
 pmdVersion = "7.5.0"
 
-project(group: "org.savantbuild.plugin", name: "linter", version: "2.0.0-RC.1", licenses: ["Apache-2.0"]) {
+project(group: "org.savantbuild.plugin", name: "linter", version: "2.0.0-RC.2", licenses: ["Apache-2.0"]) {
   workflow {
     fetch {
       // Dependency resolution order:
@@ -49,10 +49,10 @@ project(group: "org.savantbuild.plugin", name: "linter", version: "2.0.0-RC.1", 
     group(name: "compile") {
       dependency(id: "net.sourceforge.pmd:pmd-core:${pmdVersion}")
       dependency(id: "net.sourceforge.pmd:pmd-java:${pmdVersion}")
+      dependency(id: "org.savantbuild:savant-io:2.0.0-RC.7")
     }
 
     group(name: "test-compile", export: false) {
-      dependency(id: "org.savantbuild:savant-io:2.0.0-RC.7")
       dependency(id: "org.savantbuild:savant-version:2.0.0-RC.7")
       dependency(id: "org.testng:testng:6.8.7")
     }

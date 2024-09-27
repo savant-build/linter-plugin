@@ -19,6 +19,7 @@ import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 
 import org.savantbuild.domain.Project
+import org.savantbuild.io.FileTools
 import org.savantbuild.output.Output
 import org.savantbuild.plugin.groovy.BaseGroovyPlugin
 import org.savantbuild.runtime.RuntimeConfiguration
@@ -59,6 +60,13 @@ class LinterPlugin extends BaseGroovyPlugin {
       fail("You must specify one or more values for the [ruleSets] argument. It will look something like this:\n\npmd(ruleSets: [\"src/test/resources/pmd/ruleset.xml\"])")
     }
 
+    // Ensure the report directory exists
+    FileTools.prune(settings.reportDirectory)
+    if (!Files.exists(settings.reportDirectory.parent)) {
+      Files.createDirectories(settings.reportDirectory.parent);
+    }
+    Files.createDirectory(settings.reportDirectory)
+
     PMDConfiguration config = new PMDConfiguration()
     config.addInputPath(project.directory.resolve(inputPath))
 
@@ -66,9 +74,6 @@ class LinterPlugin extends BaseGroovyPlugin {
     config.setMinimumPriority(RulePriority.valueOf(minimumPriority))
     config.setReportFormat(reportFormat)
     config.setReportFile(settings.reportDirectory.resolve((String) (reportFileName + "." + reportFormat)))
-
-    // Ensure the report directory exists
-    Files.createDirectory(settings.reportDirectory)
 
     def writers = [
         "html": new StringWriter(),
