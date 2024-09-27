@@ -15,8 +15,9 @@
  */
 
 pmdVersion = "7.5.0"
+savantVersion = "2.0.0"
 
-project(group: "org.savantbuild.plugin", name: "linter", version: "2.0.0-RC.2", licenses: ["Apache-2.0"]) {
+project(group: "org.savantbuild.plugin", name: "linter", version: "2.0.0", licenses: ["Apache-2.0"]) {
   workflow {
     fetch {
       // Dependency resolution order:
@@ -41,19 +42,19 @@ project(group: "org.savantbuild.plugin", name: "linter", version: "2.0.0-RC.2", 
 
   dependencies {
     group(name: "provided") {
-      dependency(id: "org.savantbuild:savant-core:2.0.0-RC.8")
-      dependency(id: "org.savantbuild:savant-dependency-management:2.0.0-RC.7")
-      dependency(id: "org.savantbuild:savant-utils:2.0.0-RC.7")
+      dependency(id: "org.savantbuild:savant-core:${savantVersion}")
+      dependency(id: "org.savantbuild:savant-dependency-management:${savantVersion}")
+      dependency(id: "org.savantbuild:savant-utils:${savantVersion}")
     }
 
     group(name: "compile") {
       dependency(id: "net.sourceforge.pmd:pmd-core:${pmdVersion}")
       dependency(id: "net.sourceforge.pmd:pmd-java:${pmdVersion}")
-      dependency(id: "org.savantbuild:savant-io:2.0.0-RC.7")
+      dependency(id: "org.savantbuild:savant-io:${savantVersion}")
     }
 
     group(name: "test-compile", export: false) {
-      dependency(id: "org.savantbuild:savant-version:2.0.0-RC.7")
+      dependency(id: "org.savantbuild:savant-version:${savantVersion}")
       dependency(id: "org.testng:testng:6.8.7")
     }
   }
@@ -64,11 +65,11 @@ project(group: "org.savantbuild.plugin", name: "linter", version: "2.0.0-RC.2", 
 }
 
 // Plugins
-dependency = loadPlugin(id: "org.savantbuild.plugin:dependency:2.0.0-RC.7")
-groovy = loadPlugin(id: "org.savantbuild.plugin:groovy:2.0.0-RC.7")
-groovyTestNG = loadPlugin(id: "org.savantbuild.plugin:groovy-testng:2.0.0-RC.7")
-idea = loadPlugin(id: "org.savantbuild.plugin:idea:2.0.0-RC.7")
-release = loadPlugin(id: "org.savantbuild.plugin:release-git:2.0.0-RC.6")
+dependency = loadPlugin(id: "org.savantbuild.plugin:dependency:${savantVersion}")
+groovy = loadPlugin(id: "org.savantbuild.plugin:groovy:${savantVersion}")
+groovyTestNG = loadPlugin(id: "org.savantbuild.plugin:groovy-testng:${savantVersion}")
+idea = loadPlugin(id: "org.savantbuild.plugin:idea:${savantVersion}")
+release = loadPlugin(id: "org.savantbuild.plugin:release-git:${savantVersion}")
 
 // Plugin settings
 groovy.settings.groovyVersion = "4.0"
@@ -78,11 +79,11 @@ groovyTestNG.settings.groovyVersion = "4.0"
 groovyTestNG.settings.javaVersion = "17"
 idea.settings.imlFile = "linter-plugin.iml"
 idea.settings.moduleMap = [
-    "org.savantbuild:savant-core:2.0.0-RC.8"                  : "savant-core",
-    "org.savantbuild:savant-dependency-management:2.0.0-RC.7" : "savant-dependency-management",
-    "org.savantbuild:savant-io:2.0.0-RC.7"                    : "savant-io",
-    "org.savantbuild:savant-utils:2.0.0-RC.7"                 : "savant-utils",
-    "org.savantbuild:savant-version:2.0.0-RC.7"               : "savant-version"
+    "org.savantbuild:savant-core:${savantVersion}"                  : "savant-core",
+    "org.savantbuild:savant-dependency-management:${savantVersion}" : "savant-dependency-management",
+    "org.savantbuild:savant-io:${savantVersion}"                    : "savant-io",
+    "org.savantbuild:savant-utils:${savantVersion}"                 : "savant-utils",
+    "org.savantbuild:savant-version:${savantVersion}"               : "savant-version"
 ]
 
 target(name: "clean", description: "Cleans the project") {
