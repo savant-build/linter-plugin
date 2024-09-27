@@ -56,6 +56,7 @@ class LinterPlugin extends BaseGroovyPlugin {
     String inputPath = attributes.getOrDefault("inputPath", "src/main/java")
     String minimumPriority = attributes.getOrDefault("minimumPriority", "MEDIUM")
     String[] ruleSets = attributes.getOrDefault("ruleSets", [])
+    boolean failOnViolations = attributes.getOrDefault("failOnViolations", true)
 
     if (ruleSets.length == 0) {
       fail("You must specify one or more values for the [ruleSets] argument. It will look something like this:\n\npmd(ruleSets: [\"src/test/resources/pmd/ruleset.xml\"])")
@@ -122,6 +123,10 @@ class LinterPlugin extends BaseGroovyPlugin {
         output.infoln("\nPMD analysis report")
         output.infoln("===============================================")
         output.infoln writers.text.toString()
+      }
+
+      if (report.configurationErrors.size() > 0 || report.processingErrors.size() > 0 || (failOnViolations && report.violations.size() > 0)) {
+        fail("PMD analysis failed.")
       }
     }
   }

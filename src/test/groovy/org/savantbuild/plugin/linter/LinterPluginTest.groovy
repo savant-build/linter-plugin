@@ -34,6 +34,7 @@ import org.testng.annotations.Test
 import static org.testng.AssertJUnit.assertEquals
 import static org.testng.AssertJUnit.assertFalse
 import static org.testng.AssertJUnit.assertTrue
+import static org.testng.AssertJUnit.fail
 
 /**
  * Tests the Linter plugin.
@@ -78,17 +79,40 @@ class LinterPluginTest {
   @Test
   void pmd() throws Exception {
     // Execute PMD
-    plugin.pmd(
-        minimumPriority: "MEDIUM",
-        ruleSets: ["src/test/resources/pmd/ruleset.xml"]
-    )
+    try {
+      plugin.pmd(
+          minimumPriority: "MEDIUM",
+          ruleSets: ["src/test/resources/pmd/ruleset.xml"]
+      )
+      fail("Expected PMD analysis to fail.")
+    } catch (BuildFailureException e) {
+      assertEquals("PMD analysis failed.", e.getMessage())
+    }
 
-    // Assert the report has something in it?
     assertTrue(Files.exists(plugin.settings.reportDirectory.resolve("pmd-report.html")))
     assertTrue(Files.exists(plugin.settings.reportDirectory.resolve("pmd-report.txt")))
     assertTrue(Files.exists(plugin.settings.reportDirectory.resolve("pmd-report.xml")))
 
     String textReport = new String(Files.readAllBytes(plugin.settings.reportDirectory.resolve("pmd-report.txt")))
+    assertEquals("test-project/src/main/java/org/savantbuild/test/MyClass.java:29:\tUnusedPrivateField:\tAvoid unused private fields such as 'unUsed'.\n",
+        textReport)
+
+    // Perform the same request, but do not fail on violations.
+    try {
+      plugin.pmd(
+          failOnViolations: false,
+          minimumPriority: "MEDIUM",
+          ruleSets: ["src/test/resources/pmd/ruleset.xml"]
+      )
+    } catch (BuildFailureException e) {
+      fail("Did not expected PMD analysis to fail.\n" + e.getMessage())
+    }
+
+    assertTrue(Files.exists(plugin.settings.reportDirectory.resolve("pmd-report.html")))
+    assertTrue(Files.exists(plugin.settings.reportDirectory.resolve("pmd-report.txt")))
+    assertTrue(Files.exists(plugin.settings.reportDirectory.resolve("pmd-report.xml")))
+
+    textReport = new String(Files.readAllBytes(plugin.settings.reportDirectory.resolve("pmd-report.txt")))
     assertEquals("test-project/src/main/java/org/savantbuild/test/MyClass.java:29:\tUnusedPrivateField:\tAvoid unused private fields such as 'unUsed'.\n",
         textReport)
   }
@@ -98,6 +122,7 @@ class LinterPluginTest {
     // Execute PMD
     try {
       plugin.pmd()
+      fail("Expected PMD analysis to fail.")
     } catch (BuildFailureException e) {
       assertEquals("""You must specify one or more values for the [ruleSets] argument. It will look something like this:
 
