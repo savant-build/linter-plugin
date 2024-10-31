@@ -26,6 +26,7 @@ import org.savantbuild.plugin.groovy.BaseGroovyPlugin
 import org.savantbuild.runtime.RuntimeConfiguration
 
 import net.sourceforge.pmd.PMDConfiguration
+import net.sourceforge.pmd.PMDVersion
 import net.sourceforge.pmd.PmdAnalysis
 import net.sourceforge.pmd.lang.LanguageRegistry
 import net.sourceforge.pmd.lang.rule.RulePriority
@@ -81,6 +82,7 @@ class LinterPlugin extends BaseGroovyPlugin {
     Files.createDirectory(settings.reportDirectory)
 
     PMDConfiguration config = new PMDConfiguration()
+    output.infoln("Using PMD version [%s]", PMDVersion.fullVersionName)
     config.prependAuxClasspath(customRuleClassPath)
     config.addInputPath(project.directory.resolve(inputPath))
 
