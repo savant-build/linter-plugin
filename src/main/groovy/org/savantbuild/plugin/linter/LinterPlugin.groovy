@@ -30,6 +30,7 @@ import net.sourceforge.pmd.PMDVersion
 import net.sourceforge.pmd.PmdAnalysis
 import net.sourceforge.pmd.lang.LanguageRegistry
 import net.sourceforge.pmd.lang.rule.RulePriority
+import net.sourceforge.pmd.lang.rule.RuleSetLoader
 import net.sourceforge.pmd.renderers.HTMLRenderer
 import net.sourceforge.pmd.renderers.TextRenderer
 
@@ -60,14 +61,20 @@ class LinterPlugin extends BaseGroovyPlugin {
     String[] ruleSets = attributes.getOrDefault("ruleSets", [])
     boolean failOnViolations = attributes.getOrDefault("failOnViolations", true)
     String customRuleDependencyGroup = attributes.getOrDefault("customRuleDependencyGroup", null)
-    def customRuleClassPath = null
+    def ruleClassLoader = RuleSetLoader.class.getClassLoader()
     if (customRuleDependencyGroup) {
       def rules = new DependencyService.TraversalRules().with(customRuleDependencyGroup,
           new DependencyService.TraversalRules.GroupTraversalRule(false, false))
       def graph = project.dependencyService.resolve(project.artifactGraph, project.workflow, rules)
-      customRuleClassPath = graph.toClasspath().toString()
+
+      URL[] ruleURLs = graph.toClasspath()
+          .paths
+          .collect { p -> p.toUri().toURL() }.toArray(new URL[0])
+      ruleClassLoader = new URLClassLoader(ruleURLs,
+          ruleClassLoader)
+
       output.infoln("Including the following custom rules in the PMD classpath: [%s]",
-          customRuleClassPath)
+          ruleURLs)
     }
 
     if (ruleSets.length == 0) {
@@ -83,7 +90,6 @@ class LinterPlugin extends BaseGroovyPlugin {
 
     PMDConfiguration config = new PMDConfiguration()
     output.infoln("Using PMD version [%s]", PMDVersion.fullVersionName)
-    config.prependAuxClasspath(customRuleClassPath)
     config.addInputPath(project.directory.resolve(inputPath))
 
     config.setDefaultLanguageVersion(LanguageRegistry.PMD.getLanguageById("java").getVersion(languageVersion))
@@ -108,8 +114,10 @@ class LinterPlugin extends BaseGroovyPlugin {
     def projectPath = project.directory.toAbsolutePath().toString() + "/"
     try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
       for (ruleSet in ruleSets) {
-        String ruleSetFileName = projectPath + ruleSet;
-        pmd.addRuleSet(pmd.newRuleSetLoader().loadFromResource(ruleSetFileName))
+        String ruleSetFileName = projectPath + ruleSet
+        pmd.addRuleSet(pmd.newRuleSetLoader()
+            .loadResourcesWith(ruleClassLoader)
+            .loadFromResource(ruleSetFileName))
       }
 
       pmd.addRenderer(html)
