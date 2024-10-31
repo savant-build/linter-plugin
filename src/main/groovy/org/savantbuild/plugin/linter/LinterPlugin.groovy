@@ -18,6 +18,7 @@ package org.savantbuild.plugin.linter
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 
+import org.savantbuild.dep.DependencyService
 import org.savantbuild.domain.Project
 import org.savantbuild.io.FileTools
 import org.savantbuild.output.Output
@@ -57,6 +58,16 @@ class LinterPlugin extends BaseGroovyPlugin {
     String minimumPriority = attributes.getOrDefault("minimumPriority", "MEDIUM")
     String[] ruleSets = attributes.getOrDefault("ruleSets", [])
     boolean failOnViolations = attributes.getOrDefault("failOnViolations", true)
+    String customRuleDependencyGroup = attributes.getOrDefault("customRuleDependencyGroup", null)
+    def customRuleClassPath = null
+    if (customRuleDependencyGroup) {
+      def rules = new DependencyService.TraversalRules().with(customRuleDependencyGroup,
+          new DependencyService.TraversalRules.GroupTraversalRule(false, false))
+      def graph = project.dependencyService.resolve(project.artifactGraph, project.workflow, rules)
+      customRuleClassPath = graph.toClasspath().toString()
+      output.infoln("Including the following custom rules in the PMD classpath",
+          customRuleClassPath)
+    }
 
     if (ruleSets.length == 0) {
       fail("You must specify one or more values for the [ruleSets] argument. It will look something like this:\n\npmd(ruleSets: [\"src/test/resources/pmd/ruleset.xml\"])")
@@ -70,6 +81,7 @@ class LinterPlugin extends BaseGroovyPlugin {
     Files.createDirectory(settings.reportDirectory)
 
     PMDConfiguration config = new PMDConfiguration()
+    config.prependAuxClasspath(customRuleClassPath)
     config.addInputPath(project.directory.resolve(inputPath))
 
     config.setDefaultLanguageVersion(LanguageRegistry.PMD.getLanguageById("java").getVersion(languageVersion))
