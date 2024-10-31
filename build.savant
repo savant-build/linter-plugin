@@ -52,7 +52,9 @@ project(group: "org.savantbuild.plugin", name: "linter", version: "2.0.3", licen
       dependency(id: "net.sourceforge.pmd:pmd-java:${pmdVersion}")
       dependency(id: "org.savantbuild:savant-io:${savantVersion}")
     }
-
+    group(name: "runtime") {
+      dependency(id: "org.slf4j:slf4j-simple:1.7.25")
+    }
     group(name: "test-compile", export: false) {
       dependency(id: "org.savantbuild:savant-version:${savantVersion}")
       dependency(id: "org.testng:testng:6.8.7")
