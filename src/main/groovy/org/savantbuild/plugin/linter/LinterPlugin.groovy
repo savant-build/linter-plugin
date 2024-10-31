@@ -66,7 +66,7 @@ class LinterPlugin extends BaseGroovyPlugin {
           new DependencyService.TraversalRules.GroupTraversalRule(false, false))
       def graph = project.dependencyService.resolve(project.artifactGraph, project.workflow, rules)
       customRuleClassPath = graph.toClasspath().toString()
-      output.infoln("Including the following custom rules in the PMD classpath",
+      output.infoln("Including the following custom rules in the PMD classpath: [%s]",
           customRuleClassPath)
     }
 
