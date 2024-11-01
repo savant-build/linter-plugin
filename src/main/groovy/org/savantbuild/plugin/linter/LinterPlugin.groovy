@@ -18,6 +18,7 @@ package org.savantbuild.plugin.linter
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 
+import org.savantbuild.dep.DependencyService
 import org.savantbuild.domain.Project
 import org.savantbuild.io.FileTools
 import org.savantbuild.output.Output
@@ -25,9 +26,11 @@ import org.savantbuild.plugin.groovy.BaseGroovyPlugin
 import org.savantbuild.runtime.RuntimeConfiguration
 
 import net.sourceforge.pmd.PMDConfiguration
+import net.sourceforge.pmd.PMDVersion
 import net.sourceforge.pmd.PmdAnalysis
 import net.sourceforge.pmd.lang.LanguageRegistry
 import net.sourceforge.pmd.lang.rule.RulePriority
+import net.sourceforge.pmd.lang.rule.RuleSetLoader
 import net.sourceforge.pmd.renderers.HTMLRenderer
 import net.sourceforge.pmd.renderers.TextRenderer
 
@@ -54,9 +57,28 @@ class LinterPlugin extends BaseGroovyPlugin {
     boolean reportSuppressedViolations = attributes.getOrDefault("reportSuppressedViolations", false)
     String languageVersion = attributes.getOrDefault("languageVersion", "17")
     String inputPath = attributes.getOrDefault("inputPath", "src/main/java")
+    String sourceClassesPath = attributes.getOrDefault("sourceClassesPath", "build/classes/main")
+    String testClassesPath = attributes.getOrDefault("testClassesPath", "build/classes/test")
+    String cachePath = attributes.getOrDefault("cachePath", "build/pmd.cache")
     String minimumPriority = attributes.getOrDefault("minimumPriority", "MEDIUM")
     String[] ruleSets = attributes.getOrDefault("ruleSets", [])
     boolean failOnViolations = attributes.getOrDefault("failOnViolations", true)
+    String customRuleDependencyGroup = attributes.getOrDefault("customRuleDependencyGroup", null)
+    def ruleClassLoader = RuleSetLoader.class.getClassLoader()
+    if (customRuleDependencyGroup) {
+      def rules = new DependencyService.TraversalRules().with(customRuleDependencyGroup,
+          new DependencyService.TraversalRules.GroupTraversalRule(false, false))
+      def graph = project.dependencyService.resolve(project.artifactGraph, project.workflow, rules)
+
+      URL[] ruleURLs = graph.toClasspath()
+          .paths
+          .collect { p -> p.toUri().toURL() }.toArray(new URL[0])
+      ruleClassLoader = new URLClassLoader(ruleURLs,
+          ruleClassLoader)
+
+      output.infoln("Including the following custom rules in the PMD classpath: [%s]",
+          ruleURLs)
+    }
 
     if (ruleSets.length == 0) {
       fail("You must specify one or more values for the [ruleSets] argument. It will look something like this:\n\npmd(ruleSets: [\"src/test/resources/pmd/ruleset.xml\"])")
@@ -70,7 +92,16 @@ class LinterPlugin extends BaseGroovyPlugin {
     Files.createDirectory(settings.reportDirectory)
 
     PMDConfiguration config = new PMDConfiguration()
+    output.infoln("Using PMD version [%s]", PMDVersion.fullVersionName)
+    config.setAnalysisCacheLocation(project.directory.resolve(cachePath).toAbsolutePath().toString());
     config.addInputPath(project.directory.resolve(inputPath))
+    def auxClassPath = [
+        sourceClassesPath,
+        testClassesPath
+    ].collect { f -> project.directory.resolve(f).toAbsolutePath().toString() }
+        .join(File.pathSeparator)
+    output.infoln("Adding aux classpath [%s]", auxClassPath)
+    config.prependAuxClasspath(auxClassPath)
 
     config.setDefaultLanguageVersion(LanguageRegistry.PMD.getLanguageById("java").getVersion(languageVersion))
     config.setMinimumPriority(RulePriority.valueOf(minimumPriority))
@@ -94,8 +125,10 @@ class LinterPlugin extends BaseGroovyPlugin {
     def projectPath = project.directory.toAbsolutePath().toString() + "/"
     try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
       for (ruleSet in ruleSets) {
-        String ruleSetFileName = projectPath + ruleSet;
-        pmd.addRuleSet(pmd.newRuleSetLoader().loadFromResource(ruleSetFileName))
+        String ruleSetFileName = projectPath + ruleSet
+        pmd.addRuleSet(pmd.newRuleSetLoader()
+            .loadResourcesWith(ruleClassLoader)
+            .loadFromResource(ruleSetFileName))
       }
 
       pmd.addRenderer(html)

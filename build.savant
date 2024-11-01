@@ -17,7 +17,7 @@
 pmdVersion = "7.5.0"
 savantVersion = "2.0.0"
 
-project(group: "org.savantbuild.plugin", name: "linter", version: "2.0.2", licenses: ["Apache-2.0"]) {
+project(group: "org.savantbuild.plugin", name: "linter", version: "2.0.3", licenses: ["Apache-2.0"]) {
   workflow {
     fetch {
       // Dependency resolution order:
@@ -52,7 +52,9 @@ project(group: "org.savantbuild.plugin", name: "linter", version: "2.0.2", licen
       dependency(id: "net.sourceforge.pmd:pmd-java:${pmdVersion}")
       dependency(id: "org.savantbuild:savant-io:${savantVersion}")
     }
-
+    group(name: "runtime") {
+      dependency(id: "org.slf4j:slf4j-simple:1.7.25")
+    }
     group(name: "test-compile", export: false) {
       dependency(id: "org.savantbuild:savant-version:${savantVersion}")
       dependency(id: "org.testng:testng:6.8.7")
@@ -79,11 +81,11 @@ groovyTestNG.settings.groovyVersion = "4.0"
 groovyTestNG.settings.javaVersion = "17"
 idea.settings.imlFile = "linter-plugin.iml"
 idea.settings.moduleMap = [
-    "org.savantbuild:savant-core:${savantVersion}"                  : "savant-core",
-    "org.savantbuild:savant-dependency-management:${savantVersion}" : "savant-dependency-management",
-    "org.savantbuild:savant-io:${savantVersion}"                    : "savant-io",
-    "org.savantbuild:savant-utils:${savantVersion}"                 : "savant-utils",
-    "org.savantbuild:savant-version:${savantVersion}"               : "savant-version"
+    "org.savantbuild:savant-core:${savantVersion}"                 : "savant-core",
+    "org.savantbuild:savant-dependency-management:${savantVersion}": "savant-dependency-management",
+    "org.savantbuild:savant-io:${savantVersion}"                   : "savant-io",
+    "org.savantbuild:savant-utils:${savantVersion}"                : "savant-utils",
+    "org.savantbuild:savant-version:${savantVersion}"              : "savant-version"
 ]
 
 target(name: "clean", description: "Cleans the project") {
