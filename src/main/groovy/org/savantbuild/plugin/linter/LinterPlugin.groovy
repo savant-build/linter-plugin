@@ -59,6 +59,7 @@ class LinterPlugin extends BaseGroovyPlugin {
     String inputPath = attributes.getOrDefault("inputPath", "src/main/java")
     String sourceClassesPath = attributes.getOrDefault("sourceClassesPath", "build/classes/main")
     String testClassesPath = attributes.getOrDefault("testClassesPath", "build/classes/test")
+    String cachePath = attributes.getOrDefault("cachePath", "build/pmd.cache")
     String minimumPriority = attributes.getOrDefault("minimumPriority", "MEDIUM")
     String[] ruleSets = attributes.getOrDefault("ruleSets", [])
     boolean failOnViolations = attributes.getOrDefault("failOnViolations", true)
@@ -92,6 +93,7 @@ class LinterPlugin extends BaseGroovyPlugin {
 
     PMDConfiguration config = new PMDConfiguration()
     output.infoln("Using PMD version [%s]", PMDVersion.fullVersionName)
+    config.setAnalysisCacheLocation(project.directory.resolve(cachePath).toAbsolutePath().toString());
     config.addInputPath(project.directory.resolve(inputPath))
     def auxClassPath = [
         sourceClassesPath,
