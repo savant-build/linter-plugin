@@ -57,6 +57,8 @@ class LinterPlugin extends BaseGroovyPlugin {
     boolean reportSuppressedViolations = attributes.getOrDefault("reportSuppressedViolations", false)
     String languageVersion = attributes.getOrDefault("languageVersion", "17")
     String inputPath = attributes.getOrDefault("inputPath", "src/main/java")
+    String sourceClassesPath = attributes.getOrDefault("sourceClassesPath", "build/classes/main")
+    String testClassesPath = attributes.getOrDefault("testClassesPath", "build/classes/test")
     String minimumPriority = attributes.getOrDefault("minimumPriority", "MEDIUM")
     String[] ruleSets = attributes.getOrDefault("ruleSets", [])
     boolean failOnViolations = attributes.getOrDefault("failOnViolations", true)
@@ -91,6 +93,13 @@ class LinterPlugin extends BaseGroovyPlugin {
     PMDConfiguration config = new PMDConfiguration()
     output.infoln("Using PMD version [%s]", PMDVersion.fullVersionName)
     config.addInputPath(project.directory.resolve(inputPath))
+    def auxClassPath = [
+        sourceClassesPath,
+        testClassesPath
+    ].collect { f -> project.directory.resolve(f).toAbsolutePath().toString() }
+        .join(File.pathSeparator)
+    output.infoln("Adding aux classpath [%s]", auxClassPath)
+    config.prependAuxClasspath(auxClassPath)
 
     config.setDefaultLanguageVersion(LanguageRegistry.PMD.getLanguageById("java").getVersion(languageVersion))
     config.setMinimumPriority(RulePriority.valueOf(minimumPriority))
