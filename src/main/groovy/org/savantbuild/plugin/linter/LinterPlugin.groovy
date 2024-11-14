@@ -68,35 +68,10 @@ class LinterPlugin extends BaseGroovyPlugin {
     String minimumPriority = attributes.getOrDefault("minimumPriority", "MEDIUM")
     String[] ruleSets = attributes.getOrDefault("ruleSets", [])
     boolean failOnViolations = attributes.getOrDefault("failOnViolations", true)
-    List<String> customRuleDependencyIds = attributes.getOrDefault("customRuleDependencyIds", [])
+    List<String> customRuleDependencySpecs = attributes.getOrDefault("customRuleDependencySpecs", [])
     def ruleClassLoader = RuleSetLoader.class.getClassLoader()
-    if (customRuleDependencyIds) {
-      def ourOwnRuleGroup = "rules"
-      // without the traveral rules, when we resolve below, Savant won't know which groups to resolve
-      def traversalRules = new DependencyService.TraversalRules().with(ourOwnRuleGroup,
-          new DependencyService.TraversalRules.GroupTraversalRule(false, false))
-      // a "fake" or artificial root, just to resolve the custom rule JARs
-      def root = new ReifiedArtifact("org.savantbuild.plugin:linter-custom-rule:0.0.0",
-          License.Licenses.get("ApacheV2_0"))
-      Artifact[] dependencies = customRuleDependencyIds.collect { id ->
-        new Artifact(id)
-      }.toArray(new Artifact[0])
-      def dependencyGraph = project.dependencyService.buildGraph(root,
-          new Dependencies(new DependencyGroup(ourOwnRuleGroup, false, dependencies)),
-          project.workflow)
-      def artifactGraph = project.dependencyService.reduce(dependencyGraph)
-      def resolvedGraph = project.dependencyService.resolve(artifactGraph,
-          project.workflow,
-          traversalRules)
-
-      URL[] ruleURLs = resolvedGraph.toClasspath()
-          .paths
-          .collect { p -> p.toUri().toURL() }.toArray(new URL[0])
-      ruleClassLoader = new URLClassLoader(ruleURLs,
-          ruleClassLoader)
-
-      output.infoln("Including the following custom rules in the PMD classpath: [%s]",
-          ruleURLs)
+    if (customRuleDependencySpecs) {
+      ruleClassLoader = getLoaderWithCustomRules(customRuleDependencySpecs, ruleClassLoader)
     }
 
     if (ruleSets.length == 0) {
@@ -181,5 +156,43 @@ class LinterPlugin extends BaseGroovyPlugin {
         fail("PMD analysis failed.")
       }
     }
+  }
+
+  private getLoaderWithCustomRules(List<String> customRuleDependencySpecs,
+                                   ClassLoader ruleClassLoader) {
+    def ourOwnRuleGroup = "rules"
+    // without the traversal rules, when we resolve below, Savant won't know which groups to resolve
+    def traversalRules = new DependencyService.TraversalRules().with(ourOwnRuleGroup,
+        new DependencyService.TraversalRules.GroupTraversalRule(false, false))
+    // a "fake" or artificial root, just to resolve the custom rule JARs
+
+    def root = new ReifiedArtifact("org.savantbuild.plugin:linter-custom-rule:0.0.0",
+        License.Licenses.get("ApacheV2_0"))
+
+    // When an app uses the linter plugin, they've supplied a list of dependency specs, each spec
+    // pointing to custom rules
+    Artifact[] dependencies = customRuleDependencySpecs.collect { spec ->
+      new Artifact(spec)
+    }.toArray(new Artifact[0])
+
+    // we are just using the project to get this dependency. This does NOT mean we are inter-tangled
+    // with the project's dependency graph
+    def dependencyService = project.dependencyService
+    def dependencyGraph = dependencyService.buildGraph(root,
+        new Dependencies(new DependencyGroup(ourOwnRuleGroup, false, dependencies)),
+        project.workflow)
+    def artifactGraph = dependencyService.reduce(dependencyGraph)
+    def resolvedGraph = dependencyService.resolve(artifactGraph,
+        project.workflow,
+        traversalRules)
+
+    URL[] ruleJARURLs = resolvedGraph.toClasspath()
+        .paths
+        .collect { p -> p.toUri().toURL() }.toArray(new URL[0])
+
+    output.infoln("Including the following custom rules in the PMD classpath: [%s]",
+        ruleJARURLs)
+
+    new URLClassLoader(ruleJARURLs, ruleClassLoader)
   }
 }
