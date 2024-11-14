@@ -19,6 +19,11 @@ import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 
 import org.savantbuild.dep.DependencyService
+import org.savantbuild.dep.domain.Artifact
+import org.savantbuild.dep.domain.Dependencies
+import org.savantbuild.dep.domain.DependencyGroup
+import org.savantbuild.dep.domain.License
+import org.savantbuild.dep.domain.ReifiedArtifact
 import org.savantbuild.domain.Project
 import org.savantbuild.io.FileTools
 import org.savantbuild.output.Output
@@ -63,14 +68,28 @@ class LinterPlugin extends BaseGroovyPlugin {
     String minimumPriority = attributes.getOrDefault("minimumPriority", "MEDIUM")
     String[] ruleSets = attributes.getOrDefault("ruleSets", [])
     boolean failOnViolations = attributes.getOrDefault("failOnViolations", true)
-    String customRuleDependencyGroup = attributes.getOrDefault("customRuleDependencyGroup", null)
+    List<String> customRuleDependencyIds = attributes.getOrDefault("customRuleDependencyIds", [])
     def ruleClassLoader = RuleSetLoader.class.getClassLoader()
-    if (customRuleDependencyGroup) {
-      def rules = new DependencyService.TraversalRules().with(customRuleDependencyGroup,
+    if (customRuleDependencyIds) {
+      def ourOwnRuleGroup = "rules"
+      // without the traveral rules, when we resolve below, Savant won't know which groups to resolve
+      def traversalRules = new DependencyService.TraversalRules().with(ourOwnRuleGroup,
           new DependencyService.TraversalRules.GroupTraversalRule(false, false))
-      def graph = project.dependencyService.resolve(project.artifactGraph, project.workflow, rules)
+      // a "fake" or artificial root, just to resolve the custom rule JARs
+      def root = new ReifiedArtifact("org.savantbuild.plugin:linter-custom-rule:0.0.0",
+          License.Licenses.get("ApacheV2_0"))
+      Artifact[] dependencies = customRuleDependencyIds.collect { id ->
+        new Artifact(id)
+      }.toArray(new Artifact[0])
+      def dependencyGraph = project.dependencyService.buildGraph(root,
+          new Dependencies(new DependencyGroup(ourOwnRuleGroup, false, dependencies)),
+          project.workflow)
+      def artifactGraph = project.dependencyService.reduce(dependencyGraph)
+      def resolvedGraph = project.dependencyService.resolve(artifactGraph,
+          project.workflow,
+          traversalRules)
 
-      URL[] ruleURLs = graph.toClasspath()
+      URL[] ruleURLs = resolvedGraph.toClasspath()
           .paths
           .collect { p -> p.toUri().toURL() }.toArray(new URL[0])
       ruleClassLoader = new URLClassLoader(ruleURLs,
