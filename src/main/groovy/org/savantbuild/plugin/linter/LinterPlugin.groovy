@@ -69,6 +69,7 @@ class LinterPlugin extends BaseGroovyPlugin {
     String[] ruleSets = attributes.getOrDefault("ruleSets", [])
     boolean failOnViolations = attributes.getOrDefault("failOnViolations", true)
     List<String> customRuleDependencySpecs = attributes.getOrDefault("customRuleDependencySpecs", [])
+    // our baseline rule class loader we can get from a PMD class itself
     def ruleClassLoader = RuleSetLoader.class.getClassLoader()
     if (customRuleDependencySpecs) {
       ruleClassLoader = getLoaderWithCustomRules(customRuleDependencySpecs, ruleClassLoader)
@@ -85,23 +86,8 @@ class LinterPlugin extends BaseGroovyPlugin {
     }
     Files.createDirectory(settings.reportDirectory)
 
-    PMDConfiguration config = new PMDConfiguration()
-    output.infoln("Using PMD version [%s]", PMDVersion.fullVersionName)
-    config.setAnalysisCacheLocation(project.directory.resolve(cachePath).toAbsolutePath().toString());
-    config.addInputPath(project.directory.resolve(inputPath))
-    def auxClassPath = [
-        sourceClassesPath,
-        testClassesPath
-    ].collect { f -> project.directory.resolve(f).toAbsolutePath().toString() }
-        .join(File.pathSeparator)
-    output.infoln("Adding aux classpath [%s]", auxClassPath)
-    config.prependAuxClasspath(auxClassPath)
-
-    config.setDefaultLanguageVersion(LanguageRegistry.PMD.getLanguageById("java").getVersion(languageVersion))
-    config.setMinimumPriority(RulePriority.valueOf(minimumPriority))
-    config.setShowSuppressedViolations(reportSuppressedViolations)
-    config.setReportFormat(reportFormat)
-    config.setReportFile(settings.reportDirectory.resolve((String) (reportFileName + "." + reportFormat)))
+    def config = getPMDConfiguration(cachePath, inputPath, sourceClassesPath, testClassesPath,
+        languageVersion, minimumPriority, reportSuppressedViolations, reportFormat, reportFileName)
 
     def writers = [
         "html": new StringWriter(),
@@ -155,6 +141,30 @@ class LinterPlugin extends BaseGroovyPlugin {
       if (report.configurationErrors.size() > 0 || report.processingErrors.size() > 0 || (failOnViolations && report.violations.size() > 0)) {
         fail("PMD analysis failed.")
       }
+    }
+  }
+
+  private getPMDConfiguration(String cachePath, String inputPath, String sourceClassesPath, String testClassesPath,
+                              String languageVersion, String minimumPriority, boolean reportSuppressedViolations,
+                              String reportFormat, String reportFileName) {
+    new PMDConfiguration().with {
+      output.infoln("Using PMD version [%s]", PMDVersion.fullVersionName)
+      setAnalysisCacheLocation(project.directory.resolve(cachePath).toAbsolutePath().toString());
+      addInputPath(project.directory.resolve(inputPath))
+      def auxClassPath = [
+          sourceClassesPath,
+          testClassesPath
+      ].collect { f -> project.directory.resolve(f).toAbsolutePath().toString() }
+          .join(File.pathSeparator)
+      output.infoln("Adding aux classpath [%s]", auxClassPath)
+      prependAuxClasspath(auxClassPath)
+
+      setDefaultLanguageVersion(LanguageRegistry.PMD.getLanguageById("java").getVersion(languageVersion))
+      setMinimumPriority(RulePriority.valueOf(minimumPriority))
+      setShowSuppressedViolations(reportSuppressedViolations)
+      setReportFormat(reportFormat)
+      setReportFile(settings.reportDirectory.resolve((String) (reportFileName + "." + reportFormat)))
+      it
     }
   }
 
