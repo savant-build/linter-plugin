@@ -18,6 +18,12 @@ package org.savantbuild.plugin.linter
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 
+import org.savantbuild.dep.DependencyService
+import org.savantbuild.dep.domain.Artifact
+import org.savantbuild.dep.domain.Dependencies
+import org.savantbuild.dep.domain.DependencyGroup
+import org.savantbuild.dep.domain.License
+import org.savantbuild.dep.domain.ReifiedArtifact
 import org.savantbuild.domain.Project
 import org.savantbuild.io.FileTools
 import org.savantbuild.output.Output
@@ -25,9 +31,11 @@ import org.savantbuild.plugin.groovy.BaseGroovyPlugin
 import org.savantbuild.runtime.RuntimeConfiguration
 
 import net.sourceforge.pmd.PMDConfiguration
+import net.sourceforge.pmd.PMDVersion
 import net.sourceforge.pmd.PmdAnalysis
 import net.sourceforge.pmd.lang.LanguageRegistry
 import net.sourceforge.pmd.lang.rule.RulePriority
+import net.sourceforge.pmd.lang.rule.RuleSetLoader
 import net.sourceforge.pmd.renderers.HTMLRenderer
 import net.sourceforge.pmd.renderers.TextRenderer
 
@@ -54,9 +62,18 @@ class LinterPlugin extends BaseGroovyPlugin {
     boolean reportSuppressedViolations = attributes.getOrDefault("reportSuppressedViolations", false)
     String languageVersion = attributes.getOrDefault("languageVersion", "17")
     String inputPath = attributes.getOrDefault("inputPath", "src/main/java")
+    String sourceClassesPath = attributes.getOrDefault("sourceClassesPath", "build/classes/main")
+    String testClassesPath = attributes.getOrDefault("testClassesPath", "build/classes/test")
+    String cachePath = attributes.getOrDefault("cachePath", "build/pmd.cache")
     String minimumPriority = attributes.getOrDefault("minimumPriority", "MEDIUM")
     String[] ruleSets = attributes.getOrDefault("ruleSets", [])
     boolean failOnViolations = attributes.getOrDefault("failOnViolations", true)
+    List<String> customRuleDependencySpecs = attributes.getOrDefault("customRuleDependencySpecs", [])
+    // our baseline rule class loader we can get from a PMD class itself
+    def ruleClassLoader = RuleSetLoader.class.getClassLoader()
+    if (customRuleDependencySpecs) {
+      ruleClassLoader = getLoaderWithCustomRules(customRuleDependencySpecs, ruleClassLoader)
+    }
 
     if (ruleSets.length == 0) {
       fail("You must specify one or more values for the [ruleSets] argument. It will look something like this:\n\npmd(ruleSets: [\"src/test/resources/pmd/ruleset.xml\"])")
@@ -69,14 +86,8 @@ class LinterPlugin extends BaseGroovyPlugin {
     }
     Files.createDirectory(settings.reportDirectory)
 
-    PMDConfiguration config = new PMDConfiguration()
-    config.addInputPath(project.directory.resolve(inputPath))
-
-    config.setDefaultLanguageVersion(LanguageRegistry.PMD.getLanguageById("java").getVersion(languageVersion))
-    config.setMinimumPriority(RulePriority.valueOf(minimumPriority))
-    config.setShowSuppressedViolations(reportSuppressedViolations)
-    config.setReportFormat(reportFormat)
-    config.setReportFile(settings.reportDirectory.resolve((String) (reportFileName + "." + reportFormat)))
+    def config = getPMDConfiguration(cachePath, inputPath, sourceClassesPath, testClassesPath,
+        languageVersion, minimumPriority, reportSuppressedViolations, reportFormat, reportFileName)
 
     def writers = [
         "html": new StringWriter(),
@@ -94,8 +105,10 @@ class LinterPlugin extends BaseGroovyPlugin {
     def projectPath = project.directory.toAbsolutePath().toString() + "/"
     try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
       for (ruleSet in ruleSets) {
-        String ruleSetFileName = projectPath + ruleSet;
-        pmd.addRuleSet(pmd.newRuleSetLoader().loadFromResource(ruleSetFileName))
+        String ruleSetFileName = projectPath + ruleSet
+        pmd.addRuleSet(pmd.newRuleSetLoader()
+            .loadResourcesWith(ruleClassLoader)
+            .loadFromResource(ruleSetFileName))
       }
 
       pmd.addRenderer(html)
@@ -129,5 +142,67 @@ class LinterPlugin extends BaseGroovyPlugin {
         fail("PMD analysis failed.")
       }
     }
+  }
+
+  private getPMDConfiguration(String cachePath, String inputPath, String sourceClassesPath, String testClassesPath,
+                              String languageVersion, String minimumPriority, boolean reportSuppressedViolations,
+                              String reportFormat, String reportFileName) {
+    new PMDConfiguration().with {
+      output.infoln("Using PMD version [%s]", PMDVersion.fullVersionName)
+      setAnalysisCacheLocation(project.directory.resolve(cachePath).toAbsolutePath().toString());
+      addInputPath(project.directory.resolve(inputPath))
+      def auxClassPath = [
+          sourceClassesPath,
+          testClassesPath
+      ].collect { f -> project.directory.resolve(f).toAbsolutePath().toString() }
+          .join(File.pathSeparator)
+      output.infoln("Adding aux classpath [%s]", auxClassPath)
+      prependAuxClasspath(auxClassPath)
+
+      setDefaultLanguageVersion(LanguageRegistry.PMD.getLanguageById("java").getVersion(languageVersion))
+      setMinimumPriority(RulePriority.valueOf(minimumPriority))
+      setShowSuppressedViolations(reportSuppressedViolations)
+      setReportFormat(reportFormat)
+      setReportFile(settings.reportDirectory.resolve((String) (reportFileName + "." + reportFormat)))
+      it
+    }
+  }
+
+  private getLoaderWithCustomRules(List<String> customRuleDependencySpecs,
+                                   ClassLoader ruleClassLoader) {
+    def ourOwnRuleGroup = "rules"
+    // without the traversal rules, when we resolve below, Savant won't know which groups to resolve
+    def traversalRules = new DependencyService.TraversalRules().with(ourOwnRuleGroup,
+        new DependencyService.TraversalRules.GroupTraversalRule(false, false))
+    // a "fake" or artificial root, just to resolve the custom rule JARs
+
+    def root = new ReifiedArtifact("org.savantbuild.plugin:linter-custom-rule:0.0.0",
+        License.Licenses.get("ApacheV2_0"))
+
+    // When an app uses the linter plugin, they've supplied a list of dependency specs, each spec
+    // pointing to custom rules
+    Artifact[] dependencies = customRuleDependencySpecs.collect { spec ->
+      new Artifact(spec)
+    }.toArray(new Artifact[0])
+
+    // we are just using the project to get this dependency. This does NOT mean we are inter-tangled
+    // with the project's dependency graph
+    def dependencyService = project.dependencyService
+    def dependencyGraph = dependencyService.buildGraph(root,
+        new Dependencies(new DependencyGroup(ourOwnRuleGroup, false, dependencies)),
+        project.workflow)
+    def artifactGraph = dependencyService.reduce(dependencyGraph)
+    def resolvedGraph = dependencyService.resolve(artifactGraph,
+        project.workflow,
+        traversalRules)
+
+    URL[] ruleJARURLs = resolvedGraph.toClasspath()
+        .paths
+        .collect { p -> p.toUri().toURL() }.toArray(new URL[0])
+
+    output.infoln("Including the following custom rules in the PMD classpath: [%s]",
+        ruleJARURLs)
+
+    new URLClassLoader(ruleJARURLs, ruleClassLoader)
   }
 }
