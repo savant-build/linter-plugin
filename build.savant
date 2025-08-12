@@ -15,6 +15,8 @@
  */
 
 pmdVersion = "7.5.0"
+checkstyleVersion = "10.12.5"
+spotbugsVersion = "4.8.2"
 savantVersion = "2.0.0"
 
 project(group: "org.savantbuild.plugin", name: "linter", version: "2.0.3", licenses: ["Apache-2.0"]) {
@@ -34,6 +36,13 @@ project(group: "org.savantbuild.plugin", name: "linter", version: "2.0.3", licen
     publish {
       cache()
     }
+    semanticVersions {
+      mapping(id: "com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava", version: "1.0.0")
+      mapping(id: "com.google.guava:guava-parent:26.0-android", version: "26.0.0")
+      mapping(id: "com.github.stephenc.jcip:jcip-annotations:1.0-1", version: "1.0.1")
+      mapping(id: "org.eclipse.jetty:jetty-bom:9.4.53.v20231009", version: "9.4.53+20231009")
+      mapping(id: "io.netty:netty-bom:4.1.101.Final", version: "4.1.101")
+    }
   }
 
   publishWorkflow {
@@ -50,6 +59,13 @@ project(group: "org.savantbuild.plugin", name: "linter", version: "2.0.3", licen
     group(name: "compile") {
       dependency(id: "net.sourceforge.pmd:pmd-core:${pmdVersion}")
       dependency(id: "net.sourceforge.pmd:pmd-java:${pmdVersion}")
+      dependency(id: "com.puppycrawl.tools:checkstyle:${checkstyleVersion}") {
+        exclusion(id: "org.checkerframework:checker-qual")
+        exclusion(id: "com.google.code.findbugs:jsr305")
+      }
+      dependency(id: "com.github.spotbugs:spotbugs:${spotbugsVersion}") {
+        exclusion(id: "org.slf4j:slf4j-api")
+      }
       dependency(id: "org.savantbuild:savant-io:${savantVersion}")
     }
     group(name: "runtime") {

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+    <!-- Example SpotBugs exclude filter for testing -->
+    
+    <!-- Exclude low priority issues for test -->
+    <Match>
+        <Priority value="3"/>
+    </Match>
+    
+    <!-- We can exclude specific patterns if needed for testing -->
+    <!-- For example, if we want to test that exclusions work: -->
+    <!-- 
+    <Match>
+        <Bug pattern="UuF"/>
+    </Match>
+    -->
+</FindBugsFilter>
