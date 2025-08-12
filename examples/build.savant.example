@@ -1,0 +1,168 @@
+/*
+ * Example build.savant file showing how to use the linter plugin
+ * with PMD, Checkstyle, and SpotBugs
+ */
+
+project(group: "com.example", name: "my-project", version: "1.0.0", licenses: ["Apache-2.0"]) {
+  workflow {
+    fetch {
+      cache()
+      url(url: "https://repository.savantbuild.org")
+      maven()
+    }
+  }
+
+  dependencies {
+    group(name: "compile") {
+      // Your project dependencies here
+    }
+    group(name: "test-compile") {
+      // Your test dependencies here
+    }
+  }
+}
+
+// Load plugins
+groovy = loadPlugin(id: "org.savantbuild.plugin:groovy:2.0.0")
+linter = loadPlugin(id: "org.savantbuild.plugin:linter:2.0.3")
+
+// Compilation targets
+target(name: "clean", description: "Cleans the build directory") {
+  groovy.clean()
+}
+
+target(name: "compile", description: "Compiles the project") {
+  groovy.compile()
+}
+
+target(name: "jar", description: "Creates the project JAR", dependsOn: ["compile"]) {
+  groovy.jar()
+}
+
+// PMD Analysis
+target(name: "pmd", description: "Run PMD static analysis") {
+  linter.pmd(
+    ruleSets: ["examples/config/pmd/basic-ruleset.xml"],
+    inputPath: "src/main/java",
+    languageVersion: "17",
+    minimumPriority: "MEDIUM",
+    failOnViolations: true,
+    reportFileName: "pmd-report",
+    cachePath: "build/pmd.cache"
+  )
+}
+
+// PMD with custom rules (example)
+target(name: "pmd-custom", description: "Run PMD with custom rules") {
+  linter.pmd(
+    ruleSets: ["examples/config/pmd/basic-ruleset.xml"],
+    inputPath: "src/main/java",
+    languageVersion: "17",
+    minimumPriority: "MEDIUM",
+    failOnViolations: true,
+    reportFileName: "pmd-custom-report",
+    // Example: Add custom rule JARs from Maven
+    customRuleDependencySpecs: [
+      "com.example:custom-pmd-rules:1.0.0"
+    ]
+  )
+}
+
+// Checkstyle Analysis
+target(name: "checkstyle", description: "Run Checkstyle static analysis") {
+  linter.checkstyle(
+    configFile: "examples/config/checkstyle/basic-checkstyle.xml",
+    inputPath: "src/main/java",
+    failOnViolations: true,
+    reportFileName: "checkstyle-report",
+    cacheFile: "build/checkstyle.cache"
+  )
+}
+
+// SpotBugs Analysis (requires compilation)
+target(name: "spotbugs", description: "Run SpotBugs bytecode analysis", dependsOn: ["compile"]) {
+  linter.spotbugs(
+    classesPath: "build/classes/main",
+    auxClassPath: "build/classes/test",
+    effort: "default",  // Options: min, default, max
+    threshold: "medium", // Options: low, medium, high
+    reportFormat: "html", // Options: html, xml, text
+    excludeFilter: "examples/config/spotbugs/exclude-filter.xml",
+    failOnBugs: true,
+    reportFileName: "spotbugs-report"
+  )
+}
+
+// Run all linters
+target(name: "lint", description: "Run all static analysis tools", dependsOn: ["compile"]) {
+  // PMD - source code analysis
+  linter.pmd(
+    ruleSets: ["examples/config/pmd/basic-ruleset.xml"],
+    inputPath: "src/main/java",
+    minimumPriority: "MEDIUM",
+    failOnViolations: false  // Don't fail immediately, run all linters
+  )
+  
+  // Checkstyle - style and convention checks
+  linter.checkstyle(
+    configFile: "examples/config/checkstyle/basic-checkstyle.xml",
+    inputPath: "src/main/java",
+    failOnViolations: false  // Don't fail immediately, run all linters
+  )
+  
+  // SpotBugs - bytecode analysis
+  linter.spotbugs(
+    classesPath: "build/classes/main",
+    effort: "default",
+    threshold: "medium",
+    excludeFilter: "examples/config/spotbugs/exclude-filter.xml",
+    failOnBugs: false  // Don't fail immediately, run all linters
+  )
+  
+  output.infoln("\nAll linter reports have been generated in build/linter-reports/")
+}
+
+// Quick check - runs linters with lenient settings
+target(name: "lint-quick", description: "Quick static analysis (lenient settings)") {
+  linter.pmd(
+    ruleSets: ["examples/config/pmd/basic-ruleset.xml"],
+    minimumPriority: "HIGH",
+    failOnViolations: false
+  )
+  
+  linter.checkstyle(
+    configFile: "examples/config/checkstyle/basic-checkstyle.xml",
+    failOnViolations: false
+  )
+}
+
+// Strict check - runs linters with strict settings
+target(name: "lint-strict", description: "Strict static analysis", dependsOn: ["compile"]) {
+  linter.pmd(
+    ruleSets: ["examples/config/pmd/basic-ruleset.xml"],
+    minimumPriority: "LOW",
+    failOnViolations: true
+  )
+  
+  linter.checkstyle(
+    configFile: "examples/config/checkstyle/basic-checkstyle.xml",
+    failOnViolations: true
+  )
+  
+  linter.spotbugs(
+    classesPath: "build/classes/main",
+    effort: "max",
+    threshold: "low",
+    failOnBugs: true
+  )
+}
+
+// Test target
+target(name: "test", description: "Run tests", dependsOn: ["jar"]) {
+  // Run your tests here
+}
+
+// Full build with linting
+target(name: "build", description: "Full build with static analysis", dependsOn: ["clean", "compile", "lint", "test", "jar"]) {
+  output.infoln("Build complete with static analysis!")
+}

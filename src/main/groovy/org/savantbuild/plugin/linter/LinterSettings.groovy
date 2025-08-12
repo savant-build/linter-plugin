@@ -19,7 +19,7 @@ import java.nio.file.Path
 import java.nio.file.Paths
 
 /**
- * A settings object that defines options for how to execute PMD.
+ * A settings object that defines options for linter plugins (PMD, Checkstyle, SpotBugs).
  *
  * @author Daniel DeGroff
  */

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+    <!-- Example SpotBugs exclude filter -->
+    
+    <!-- Exclude all issues in test classes -->
+    <Match>
+        <Class name="~.*Test$"/>
+    </Match>
+    
+    <!-- Exclude all issues in test source directories -->
+    <Match>
+        <Source name="~.*src/test/.*"/>
+    </Match>
+    
+    <!-- Exclude specific bug patterns globally -->
+    <Match>
+        <!-- Don't complain about preferring uppercase L in long literals -->
+        <Bug pattern="DM_NUMBER_CTOR"/>
+    </Match>
+    
+    <!-- Exclude generated code -->
+    <Match>
+        <Class name="~.*\.Generated.*"/>
+    </Match>
+    
+    <!-- Exclude specific packages -->
+    <Match>
+        <Package name="~com\.example\.generated\..*"/>
+    </Match>
+    
+    <!-- Exclude specific bug patterns in specific classes -->
+    <Match>
+        <Class name="com.example.Config"/>
+        <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2"/>
+    </Match>
+    
+    <!-- Exclude low priority issues -->
+    <Match>
+        <Priority value="3"/>
+    </Match>
+    
+    <!-- Exclude experimental bug patterns -->
+    <Match>
+        <Bug category="EXPERIMENTAL"/>
+    </Match>
+    
+    <!-- Example: Exclude a specific method from analysis -->
+    <Match>
+        <Class name="com.example.MyClass"/>
+        <Method name="legacyMethod"/>
+    </Match>
+    
+    <!-- Example: Exclude serialization issues in specific classes -->
+    <Match>
+        <Class name="~.*Dto$"/>
+        <Bug pattern="SE_BAD_FIELD,SE_NO_SERIALVERSIONID"/>
+    </Match>
+</FindBugsFilter>

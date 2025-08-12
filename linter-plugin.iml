@@ -257,6 +257,28 @@
         </SOURCES>
       </library>
     </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/com/puppycrawl/tools/checkstyle/10.12.5/checkstyle-10.12.5.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/com/puppycrawl/tools/checkstyle/10.12.5/checkstyle-10.12.5-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/com/github/spotbugs/spotbugs/4.8.2/spotbugs-4.8.2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/com/github/spotbugs/spotbugs/4.8.2/spotbugs-4.8.2-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
     <orderEntry type="module" module-name="savant-io" />
     <orderEntry type="module-library" scope="TEST">
       <library>
@@ -305,11 +327,77 @@
     <orderEntry type="module-library" scope="RUNTIME">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/.savant/cache/org/antlr/antlr4-runtime/4.9.3/antlr4-runtime-4.9.3.jar!/" />
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/checkerframework/checker-qual/2.11.1/checker-qual-2.11.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$MODULE_DIR$/.savant/cache/org/antlr/antlr4-runtime/4.9.3/antlr4-runtime-4.9.3-src.jar!/" />
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/checkerframework/checker-qual/2.11.1/checker-qual-2.11.1-src.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/pcollections/pcollections/4.0.2/pcollections-4.0.2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/pcollections/pcollections/4.0.2/pcollections-4.0.2-src.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/com/github/oowekyala/ooxml/nice-xml-messages/3.1/nice-xml-messages-3.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/com/github/oowekyala/ooxml/nice-xml-messages/3.1.0/nice-xml-messages-3.1.0-src.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/antlr/antlr4-runtime/4.13.1/antlr4-runtime-4.13.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/antlr/antlr4-runtime/4.13.1/antlr4-runtime-4.13.1-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/ow2/asm/asm/9.7/asm-9.7.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/ow2/asm/asm/9.7.0/asm-9.7.0-src.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/apache/commons/commons-lang3/3.14.0/commons-lang3-3.14.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/apache/commons/commons-lang3/3.14.0/commons-lang3-3.14.0-src.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/com/google/code/gson/gson/2.10.1/gson-2.10.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/com/google/code/gson/gson/2.10.1/gson-2.10.1-src.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
@@ -393,66 +481,427 @@
     <orderEntry type="module-library" scope="RUNTIME">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/.savant/cache/org/apache/commons/commons-lang3/3.14.0/commons-lang3-3.14.0.jar!/" />
+          <root url="jar://$MODULE_DIR$/.savant/cache/info/picocli/picocli/4.7.5/picocli-4.7.5.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$MODULE_DIR$/.savant/cache/org/apache/commons/commons-lang3/3.14.0/commons-lang3-3.14.0-src.jar!/" />
+          <root url="jar://$MODULE_DIR$/.savant/cache/info/picocli/picocli/4.7.5/picocli-4.7.5-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" scope="RUNTIME">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/.savant/cache/org/ow2/asm/asm/9.7/asm-9.7.jar!/" />
+          <root url="jar://$MODULE_DIR$/.savant/cache/commons-beanutils/commons-beanutils/1.9.4/commons-beanutils-1.9.4.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$MODULE_DIR$/.savant/cache/org/ow2/asm/asm/9.7.0/asm-9.7.0-src.jar!/" />
+          <root url="jar://$MODULE_DIR$/.savant/cache/commons-beanutils/commons-beanutils/1.9.4/commons-beanutils-1.9.4-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" scope="RUNTIME">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/.savant/cache/com/google/code/gson/gson/2.10.1/gson-2.10.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/.savant/cache/commons-logging/commons-logging/1.2.0/commons-logging-1.2.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$MODULE_DIR$/.savant/cache/com/google/code/gson/gson/2.10.1/gson-2.10.1-src.jar!/" />
+          <root url="jar://$MODULE_DIR$/.savant/cache/commons-logging/commons-logging/1.2.0/commons-logging-1.2.0-src.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" scope="RUNTIME">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/.savant/cache/org/checkerframework/checker-qual/2.11.1/checker-qual-2.11.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/.savant/cache/commons-collections/commons-collections/3.2.2/commons-collections-3.2.2.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$MODULE_DIR$/.savant/cache/org/checkerframework/checker-qual/2.11.1/checker-qual-2.11.1-src.jar!/" />
+          <root url="jar://$MODULE_DIR$/.savant/cache/commons-collections/commons-collections/3.2.2/commons-collections-3.2.2-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" scope="RUNTIME">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/.savant/cache/org/pcollections/pcollections/4.0.2/pcollections-4.0.2.jar!/" />
+          <root url="jar://$MODULE_DIR$/.savant/cache/com/google/guava/guava/32.0.1-jre/guava-32.0.1-jre.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$MODULE_DIR$/.savant/cache/org/pcollections/pcollections/4.0.2/pcollections-4.0.2-src.jar!/" />
+          <root url="jar://$MODULE_DIR$/.savant/cache/com/google/guava/guava/32.0.1-jre/guava-32.0.1-jre-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" scope="RUNTIME">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/.savant/cache/com/github/oowekyala/ooxml/nice-xml-messages/3.1/nice-xml-messages-3.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/.savant/cache/com/google/guava/failureaccess/1.0.1/failureaccess-1.0.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$MODULE_DIR$/.savant/cache/com/github/oowekyala/ooxml/nice-xml-messages/3.1.0/nice-xml-messages-3.1.0-src.jar!/" />
+          <root url="jar://$MODULE_DIR$/.savant/cache/com/google/guava/failureaccess/1.0.1/failureaccess-1.0.1-src.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/com/google/guava/listenablefuture/9999.0-empty-to-avoid-conflict-with-guava/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/com/google/errorprone/error_prone_annotations/2.18.0/error_prone_annotations-2.18.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/com/google/errorprone/error_prone_annotations/2.18.0/error_prone_annotations-2.18.0-src.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/com/google/j2objc/j2objc-annotations/2.8.0/j2objc-annotations-2.8.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/com/google/j2objc/j2objc-annotations/2.8.0/j2objc-annotations-2.8.0-src.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/reflections/reflections/0.10.2/reflections-0.10.2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/reflections/reflections/0.10.2/reflections-0.10.2-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/javassist/javassist/3.28.0-GA/javassist-3.28.0-GA.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/javassist/javassist/3.28.0-GA/javassist-3.28.0-GA-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/apache/maven/doxia/doxia-module-xdoc/1.12.0/doxia-module-xdoc-1.12.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/apache/maven/doxia/doxia-module-xdoc/1.12.0/doxia-module-xdoc-1.12.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/apache/maven/doxia/doxia-core/1.12.0/doxia-core-1.12.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/apache/maven/doxia/doxia-core/1.12.0/doxia-core-1.12.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/apache/maven/doxia/doxia-sink-api/1.12.0/doxia-sink-api-1.12.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/apache/maven/doxia/doxia-sink-api/1.12.0/doxia-sink-api-1.12.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/apache/maven/doxia/doxia-logging-api/1.12.0/doxia-logging-api-1.12.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/apache/maven/doxia/doxia-logging-api/1.12.0/doxia-logging-api-1.12.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/codehaus/plexus/plexus-container-default/2.1.0/plexus-container-default-2.1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/codehaus/plexus/plexus-container-default/2.1.0/plexus-container-default-2.1.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/codehaus/plexus/plexus-utils/3.3.0/plexus-utils-3.3.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/codehaus/plexus/plexus-utils/3.3.0/plexus-utils-3.3.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/codehaus/plexus/plexus-classworlds/2.6.0/plexus-classworlds-2.6.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/codehaus/plexus/plexus-classworlds/2.6.0/plexus-classworlds-2.6.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/apache/xbean/xbean-reflect/3.7/xbean-reflect-3.7.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/apache/xbean/xbean-reflect/3.7/xbean-reflect-3.7-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/com/google/collections/google-collections/1.0.0/google-collections-1.0.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/com/google/collections/google-collections/1.0.0/google-collections-1.0.0-src.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/junit/junit/4.11/junit-4.11.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/junit/junit/4.11/junit-4.11-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/hamcrest/hamcrest-core/1.3.0/hamcrest-core-1.3.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/hamcrest/hamcrest-core/1.3.0/hamcrest-core-1.3.0-src.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/codehaus/plexus/plexus-component-annotations/2.1.0/plexus-component-annotations-2.1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/codehaus/plexus/plexus-component-annotations/2.1.0/plexus-component-annotations-2.1.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/apache/httpcomponents/httpclient/4.5.13/httpclient-4.5.13.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/apache/httpcomponents/httpclient/4.5.13/httpclient-4.5.13-src.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/apache/commons/commons-logging/1.2.0/commons-logging-1.2.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/apache/commons/commons-logging/1.2.0/commons-logging-1.2.0-src.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/apache/httpcomponents/httpcore/4.4.14/httpcore-4.4.14.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/apache/httpcomponents/httpcore/4.4.14/httpcore-4.4.14-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/apache/commons/commons-text/1.10.0/commons-text-1.10.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/apache/commons/commons-text/1.10.0/commons-text-1.10.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/ow2/asm/asm-commons/9.6/asm-commons-9.6.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/ow2/asm/asm-commons/9.6/asm-commons-9.6-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/ow2/asm/asm-tree/9.6/asm-tree-9.6.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/ow2/asm/asm-tree/9.6/asm-tree-9.6-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/ow2/asm/asm-util/9.6/asm-util-9.6.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/ow2/asm/asm-util/9.6/asm-util-9.6-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/ow2/asm/asm-analysis/9.6/asm-analysis-9.6.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/ow2/asm/asm-analysis/9.6/asm-analysis-9.6-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/apache/bcel/bcel/6.6.1/bcel-6.6.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/apache/bcel/bcel/6.6.1/bcel-6.6.1-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/com/github/stephenc/jcip/jcip-annotations/1.0-1/jcip-annotations-1.0-1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/com/github/stephenc/jcip/jcip-annotations/1.0-1/jcip-annotations-1.0-1-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/dom4j/dom4j/2.1.4/dom4j-2.1.4.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/dom4j/dom4j/2.1.4/dom4j-2.1.4-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/com/github/spotbugs/spotbugs-annotations/4.8.2/spotbugs-annotations-4.8.2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/com/github/spotbugs/spotbugs-annotations/4.8.2/spotbugs-annotations-4.8.2-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2-src.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/jaxen/jaxen/2.0.0/jaxen-2.0.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/jaxen/jaxen/2.0.0/jaxen-2.0.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/apache/logging/log4j/log4j-core/2.22.0/log4j-core-2.22.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/apache/logging/log4j/log4j-core/2.22.0/log4j-core-2.22.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/apache/logging/log4j/log4j-api/2.22.0/log4j-api-2.22.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/apache/logging/log4j/log4j-api/2.22.0/log4j-api-2.22.0-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
@@ -497,6 +946,17 @@
         <JAVADOC />
         <SOURCES>
           <root url="jar://$MODULE_DIR$/.savant/cache/org/tukaani/xz/1.4.0/xz-1.4.0-src.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/slf4j/slf4j-simple/1.7.25/slf4j-simple-1.7.25.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/.savant/cache/org/slf4j/slf4j-simple/1.7.25/slf4j-simple-1.7.25-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
